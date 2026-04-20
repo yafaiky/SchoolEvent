@@ -33,4 +33,34 @@ class CategoryController extends Controller
         // 3. Tahap Feedback (Redirect)
         return redirect('/dashboard')->with('success', 'Kategori Berhasil Disimpan!');
     }
+
+    public function edit(Category $category)
+    {
+        // Melempar data kategori yang ditemukan ke halaman tampilan 
+        return view('category_edit', compact('category'));
+    }
+    // 2. Fungsi Memproses Perubahan Data (UPDATE) 
+    public function update(Request $request, Category $category)
+    {
+        // A. Periksa kelengkapan isi form (Sama seperti Pertemuan 5) 
+        $request->validate([
+            'name' => 'required',
+            'slug' => 'required'
+        ]);
+        // B. Eloquent ORM: Ubah datanya di database 
+        $category->update([
+            'name' => $request->name,
+            'slug' => $request->slug
+        ]);
+        // C. Tendang kembali ke dashboard dengan membawa pesan sukses 
+        return redirect('/dashboard')->with('success', 'Data Kategori berhasil diperbarui!');
+    }
+
+    public function destroy(Category $category)
+    {
+        // Eloquent ORM: Hancurkan datanya dari database 
+        $category->delete();
+        // Tendang kembali ke dashboard dengan membawa pesan sukses 
+        return redirect('/dashboard')->with('success', 'Data Kategori berhasil dihapus permanen!');
+    }
 }

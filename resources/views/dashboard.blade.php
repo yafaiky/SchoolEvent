@@ -39,6 +39,16 @@
                                 <td class="fw-bold text-danger">{{ $category->name }}</td>
                                 <td class="text-center"><span class="badge bg-secondary">{{ $category->slug }}</span></td>
                                 <td class="text-center">{{ date('d M Y', strtotime($category->created_at)) }}</td>
+
+                                <td class="text-center">
+                                    <a href="/kategori/{{ $category->id }}/edit" class="btn btn-warning btn-sm">Edit</a>
+                                    <form action="/kategori/{{ $category->id }}" method="POST" class="d-inline"
+                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus kategori ini secara permanen?');">
+                                        @csrf
+                                        @method('DELETE') <button type="submit"
+                                            class="btn btn-danger btn-sm">Hapus</button>
+                                    </form>
+                                </td>
                             </tr>
                         @empty
                             <tr>
