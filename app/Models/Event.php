@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Event extends Model
 {
     protected $guarded = [];
     
-    public function events()
+    public function category()
     {
-        return $this->hasMany(Event::class);
+        return $this->belongsTo(Category::class);
     }
 }

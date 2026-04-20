@@ -18,9 +18,16 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="text-dark fw-bold mb-0">Daftar Kategori Acara</h5>
 
-                <a href="/dashboard/category/create" class="btn btn-success fw-bold shadowsm">
-                    + Tambah Kategori Baru
-                </a>
+                <div> {{-- Kotak pembungkus agar tombol berjejer --}}
+                    <a href="/dashboard/category/create" class="btn btn-success btn-sm shadow-sm me-2">
+                        + Tambah Kategori Baru
+                    </a>
+                    {{-- [TAMBAHAN] Pintu Masuk Baru untuk Acara --}}
+                    <a href="/event/create" class="btn btn-primary btn-sm shadow-sm">
+                        + Tambah Acara Baru
+                    </a>
+                </div>
+
             </div>
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle mb-0">

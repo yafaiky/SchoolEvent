@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\EventController;
 
 Route::get('/', function () {
     return view('home');
@@ -20,5 +21,12 @@ Route::get('/kategori/{category}/edit', [CategoryController::class, 'edit']);
 
 // Jalur untuk memproses penyimpanan data yang di-edit (Perhatikan method PUT) 
 Route::put('/kategori/{category}', [CategoryController::class, 'update']); 
+
 // Jalur untuk memproses penghapusan data (Perhatikan method DELETE) 
 Route::delete('/kategori/{category}', [CategoryController::class, 'destroy']); 
+
+// Jalur untuk menampilkan halaman form input acara baru
+Route::get('/event/create', [EventController::class, 'create']); 
+
+// Jalur untuk memproses data yang dikirim dari form input acara baru
+Route::post('/event/store', [EventController::class, 'store']);
