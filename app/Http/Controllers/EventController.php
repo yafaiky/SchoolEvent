@@ -3,11 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use App\Models\Category; 
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+    public function index()
+    {
+        // [EAGER LOADING] Mengambil semua acara beserta relasi kategorinya
+        // JANGAN GUNAKAN: Event::all(); (Ini akan menyebabkan N+1 Problem)
+        $events = Event::with('category')->latest()->get();
+
+        return view('event_index', compact('events'));
+    }
+
     public function create()
     {
         // Ambil semua daftar kategori dari database 

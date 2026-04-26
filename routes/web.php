@@ -30,3 +30,6 @@ Route::get('/event/create', [EventController::class, 'create']);
 
 // Jalur untuk memproses data yang dikirim dari form input acara baru
 Route::post('/event/store', [EventController::class, 'store']);
+
+// Jalur untuk menampilkan daftar acara
+Route::get('/events', [EventController::class, 'index']);

@@ -19,6 +19,10 @@
                 <h5 class="text-dark fw-bold mb-0">Daftar Kategori Acara</h5>
 
                 <div> {{-- Kotak pembungkus agar tombol berjejer --}}
+                    <a href="/events" class="btn btn-light border-danger btn-sm shadow-sm me-2">
+                        Lihat Semua Acara
+                    </a>
+
                     <a href="/dashboard/category/create" class="btn btn-success btn-sm shadow-sm me-2">
                         + Tambah Kategori Baru
                     </a>
