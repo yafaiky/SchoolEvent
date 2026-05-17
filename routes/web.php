@@ -3,10 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\FrontEndController;
 
-Route::get('/', function () {
-    return view('home');
-});
+
+//  jalur publik untuk menampilkan halaman depan dengan daftar acara yang sudah dipublikasikan (EAGER LOADING)
+Route::get('/', [FrontEndController::class, 'index']);
 
 Route::get('/dashboard', [CategoryController::class, 'index']);
 
