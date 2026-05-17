@@ -8,7 +8,7 @@
             </div>
             <div class="card-body p-4">
 
-                <form action="/event/store" method="POST">
+                <form action="/event/store" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-3">
@@ -26,8 +26,7 @@
 
                     <div class="mb-3">
                         <label class="fw-bold">Judul Acara</label>
-                        <input type="text" name="title" class="form-control" placeholder="Contoh: 
-Pensi Akhir Tahun"
+                        <input type="text" name="title" class="form-control" placeholder="Contoh: Pensi Akhir Tahun"
                             required>
                     </div>
 
@@ -51,6 +50,18 @@ Pensi Akhir Tahun"
                         <textarea name="description" class="form-control" rows="4" placeholder="Tuliskan detail acara di sini..."
                             required></textarea>
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Poster Acara (Maks. 2MB)</label>
+
+                        {{-- Tempat penampung gambar sementara (Cermin Ajaib) --}}
+                        <img class="img-preview img-fluid mb-2 rounded shadow-sm border"
+                            style="display: none; max-height: 250px;">
+
+                        <input type="file" class="form-control" id="poster" name="poster" accept="image/*"
+                            onchange="previewImage()">
+                    </div>
+
                     <hr>
                     <button type="submit" class="btn btn-primary btn-lg w-100">Simpan Data
                         Acara</button>
@@ -58,4 +69,21 @@ Pensi Akhir Tahun"
             </div>
         </div>
     </div>
+
+
+    {{-- Algoritma JavaScript DOM FileReader --}}
+    <script>
+        function previewImage() {
+            const image = document.querySelector('#poster');
+            const imgPreview = document.querySelector('.img-preview');
+
+            imgPreview.style.display = 'block';
+            const oFReader = new FileReader();
+            oFReader.readAsDataURL(image.files[0]);
+
+            oFReader.onload = function(oFREvent) {
+                imgPreview.src = oFREvent.target.result;
+            }
+        }
+    </script>
 @endsection

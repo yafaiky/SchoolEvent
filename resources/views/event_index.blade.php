@@ -21,37 +21,79 @@
                         <thead class="table-dark text-center">
                             <tr>
                                 <th width="5%" class="py-3">No</th>
+                                <th class="py-3">Poster</th>
                                 <th class="text-start py-3">Judul Acara</th>
                                 <th class="py-3">Kategori</th>
                                 <th class="py-3">Tanggal & Lokasi</th>
                                 <th class="py-3">Kuota</th>
+                                <th class="py-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($events as $event)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
+
+                                    {{-- Kolom Poster --}}
+                                    <td class="text-center">
+                                        @if ($event->poster)
+                                            <img src="{{ asset('storage/' . $event->poster) }}" width="60"
+                                                class="rounded shadow-sm">
+                                        @else
+                                            <span class="badge bg-secondary">Tanpa Poster</span>
+                                        @endif
+                                    </td>
+
+                                    {{-- Kolom Judul Acara --}}
                                     <td class="fw-bold text-start">{{ $event->title }}</td>
 
                                     {{-- [PEMANGGILAN RELASI] Menerjemahkan ID menjadi Nama Kategori --}}
                                     <td class="text-center">
-                                        <span class="badge bg-primary">
+                                        @php
+                                            $categoryColors = ['bg-success', 'bg-warning text-dark', 'bg-info text-dark', 'bg-primary', 'bg-danger', 'bg-secondary'];
+                                            $colorIndex = $event->category_id % count($categoryColors);
+                                        @endphp
+                                        <span class="badge {{ $categoryColors[$colorIndex] }}">
                                             {{ $event->category->name }}
                                         </span>
                                     </td>
 
+                                    {{-- Kolom Tanggal & Lokasi --}}
                                     <td class="text-center">
-                                        <small
-                                            class="d-block fw-bold">{{ date('d M Y', strtotime($event->event_date)) }}</small>
+                                        <small class="d-block fw-bold">{{ date('d M Y', strtotime($event->event_date)) }}</small>
                                         <small class="text-muted">{{ $event->location }}</small>
                                     </td>
+
+                                    {{-- Kolom Kuota --}}
                                     <td class="text-center">
-                                        <span class="badge bg-warning text-dark">{{ $event->quota }} Orang</span>
+                                        @php
+                                            if ($event->quota >= 500) {
+                                                $quotaBadge = 'bg-success';
+                                            } elseif ($event->quota >= 200) {
+                                                $quotaBadge = 'bg-warning text-dark';
+                                            } else {
+                                                $quotaBadge = 'bg-danger';
+                                            }
+                                        @endphp
+                                        <span class="badge {{ $quotaBadge }}">{{ $event->quota }} Orang</span>
+                                    </td>
+
+                                    {{-- Kolom Aksi --}}
+                                    <td class="text-center">
+                                        <a href="/event/{{ $event->id }}/edit"
+                                            class="btn btn-warning btn-sm shadow-sm">Edit</a>
+
+                                        <form action="/event/{{ $event->id }}" method="POST" class="d-inline"
+                                            onsubmit="return confirm('Peringatan: File gambar posternya juga akan dihancurkan. Lanjutkan?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm shadow-sm">Hapus</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-5 text-muted fw-bold">
+                                    <td colspan="7" class="text-center py-5 text-muted fw-bold">
                                         Belum ada data acara yang terdaftar.
                                     </td>
                                 </tr>
