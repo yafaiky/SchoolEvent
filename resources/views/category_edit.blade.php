@@ -1,28 +1,104 @@
-@extends('layouts.app') @section('title', 'Edit Kategori')
+@extends('layouts.admin')
+@section('title', 'Edit Kategori - ' . $category->name)
+
+@section('extra_css')
+<style>
+    .form-page-wrap { max-width: 560px; margin: 0 auto; padding: 0 10px; }
+
+    .back-link {
+        display: inline-flex; align-items: center; gap: 6px;
+        color: var(--primary); font-size: 0.85rem; font-weight: 600;
+        text-decoration: none; margin-bottom: 20px; transition: gap 0.2s;
+    }
+    .back-link:hover { gap: 10px; }
+
+    .form-card {
+        background: white; border-radius: 16px;
+        border: 1px solid var(--border); padding: 36px;
+    }
+
+    .form-card-title {
+        font-size: clamp(1.3rem, 3vw, 1.4rem); font-weight: 800; color: var(--text);
+        letter-spacing: -0.4px; margin-bottom: 6px;
+    }
+
+    .form-card-subtitle {
+        font-size: 0.85rem; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6;
+    }
+
+    .form-group { margin-bottom: 22px; }
+
+    .form-label {
+        display: block; font-size: 0.82rem; font-weight: 600;
+        color: var(--text); margin-bottom: 7px;
+    }
+
+    .form-input {
+        width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+        padding: 10px 14px; font-size: 0.88rem; font-family: 'Inter', sans-serif;
+        color: var(--text); background: white; outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input::placeholder { color: #9CA3AF; }
+    .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(35,56,167,0.08); }
+    .form-input.is-invalid { border-color: #EF4444; }
+    .invalid-msg { color: #DC2626; font-size: 0.78rem; margin-top: 5px; }
+    .hint-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 5px; }
+
+    .form-actions {
+        display: flex; align-items: center; justify-content: flex-end;
+        gap: 12px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border);
+    }
+    
+    @media (max-width: 600px) {
+        .form-card { padding: 24px 16px; }
+        .form-actions { flex-direction: column-reverse; }
+        .form-actions .btn-primary-admin,
+        .form-actions .btn-secondary-admin { width: 100%; justify-content: center; }
+    }
+</style>
+@endsection
+
 @section('content')
-    <div class="container mt-4">
-        <div class="card shadow border-warning">
-            <div class="card-header bg-warning text-dark fw-bold">
-                Edit Kategori Acara
+
+<div class="form-page-wrap">
+    <a href="{{ route('dashboard') }}" class="back-link">
+        <i class="bi bi-arrow-left"></i> Kembali ke Dashboard
+    </a>
+
+    <div class="form-card">
+        <h1 class="form-card-title">Edit Kategori Acara</h1>
+        <p class="form-card-subtitle">
+            Sedang mengedit: <strong>{{ $category->name }}</strong>
+        </p>
+
+        <form action="{{ route('category.update', $category->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            <div class="form-group">
+                <label class="form-label">Nama Kategori</label>
+                <input type="text" name="name" class="form-input @error('name') is-invalid @enderror"
+                       value="{{ old('name', $category->name) }}" required autofocus>
+                @error('name') <div class="invalid-msg">{{ $message }}</div> @enderror
             </div>
-            <div class="card-body p-4">
-                <form action="/kategori/{{ $category->id }}" method="POST">
-                    @csrf
-                    @method('PUT') <div class="mb-3">
-                        <label class="fw-bold text-danger mb-1">Nama Kategori</label>
-                        <input type="text" name="name" class="form-control" value="{{ $category ->name }}" required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="fw-bold text-danger mb-1">URL Slug</label>
-                        <input type="text" name="slug" class="form-control" value="{{ $category ->slug }}" required>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <a href="/dashboard" class="btn btn-secondary px-4">Batal</a>
-                        <button type="submit" class="btn btn-warning text-dark fw-bold px 4">Simpan Perubahan</button>
-                    </div>
-                </form>
+
+            <div class="form-group">
+                <label class="form-label">URL Slug</label>
+                <input type="text" name="slug" class="form-input @error('slug') is-invalid @enderror"
+                       value="{{ old('slug', $category->slug) }}" required>
+                <div class="hint-text">Gunakan huruf kecil dan tanda hubung, tanpa spasi.</div>
+                @error('slug') <div class="invalid-msg">{{ $message }}</div> @enderror
             </div>
-        </div>
+
+            <div class="form-actions">
+                <a href="{{ route('dashboard') }}" class="btn-secondary-admin">Batal</a>
+                <button type="submit" class="btn-primary-admin">
+                    <i class="bi bi-check-circle"></i> Simpan Perubahan
+                </button>
+            </div>
+        </form>
     </div>
+</div>
+
 @endsection

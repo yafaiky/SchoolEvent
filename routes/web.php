@@ -1,45 +1,54 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FrontEndController;
 
+// ============================================================
+// RUTE PUBLIK (Bisa diakses siapa saja, termasuk Tamu/Guest)
+// ============================================================
 
-//  jalur publik untuk menampilkan halaman depan dengan daftar acara yang sudah dipublikasikan (EAGER LOADING)
-Route::get('/', [FrontEndController::class, 'index']);
+// Halaman depan - Katalog acara
+Route::get('/', [FrontEndController::class, 'index'])->name('home');
 
-Route::get('/dashboard', [CategoryController::class, 'index']);
 
-// Jalur untuk menampilkan halaman input
-Route::get('/dashboard/category/create', [CategoryController::class, 'create']);
+// ============================================================
+// RUTE ADMIN - DIJAGA MIDDLEWARE AUTH (Modul 2)
+// Hanya pengguna yang sudah login yang boleh masuk!
+// Rute spesifik HARUS didefinisikan SEBELUM rute dengan parameter {event}
+// ============================================================
+Route::middleware(['auth'])->group(function () {
 
-// Jalur untuk memproses data yang dikirim dari form
-Route::post('/dashboard/category/store', [CategoryController::class, 'store']);
+    // Dashboard (Manajemen Kategori)
+    Route::get('/dashboard', [CategoryController::class, 'index'])->name('dashboard');
 
-// Jalur untuk menampilkan halaman edit (Perhatikan parameter {category} yang akan digunakan untuk mengambil data yang akan diedit)
-Route::get('/kategori/{category}/edit', [CategoryController::class, 'edit']);
+    // Rute Kategori
+    Route::get('/dashboard/category/create', [CategoryController::class, 'create'])->name('category.create');
+    Route::post('/dashboard/category/store', [CategoryController::class, 'store'])->name('category.store');
+    Route::get('/kategori/{category}/edit', [CategoryController::class, 'edit'])->name('category.edit');
+    Route::put('/kategori/{category}', [CategoryController::class, 'update'])->name('category.update');
+    Route::delete('/kategori/{category}', [CategoryController::class, 'destroy'])->name('category.destroy');
 
-// Jalur untuk memproses penyimpanan data yang di-edit (Perhatikan method PUT) 
-Route::put('/kategori/{category}', [CategoryController::class, 'update']);
+    // Rute Manajemen Acara (rute spesifik /events, /event/create harus di atas)
+    Route::get('/events', [EventController::class, 'index'])->name('events.index');
+    Route::get('/event/create', [EventController::class, 'create'])->name('event.create');
+    Route::post('/event/store', [EventController::class, 'store'])->name('event.store');
+    Route::get('/event/{event}/edit', [EventController::class, 'edit'])->name('event.edit');
+    Route::put('/event/{event}', [EventController::class, 'update'])->name('event.update');
+    Route::delete('/event/{event}', [EventController::class, 'destroy'])->name('event.destroy');
 
-// Jalur untuk memproses penghapusan data (Perhatikan method DELETE) 
-Route::delete('/kategori/{category}', [CategoryController::class, 'destroy']);
+    // Rute Profil (dari Breeze)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-// Jalur untuk menampilkan halaman form input acara baru
-Route::get('/event/create', [EventController::class, 'create']);
+// Halaman Detail Acara Dinamis (Modul 3) - publik, didefinisikan SETELAH rute admin
+// Karena rute /event/create sudah di-handle di atas oleh middleware auth,
+// rute ini hanya akan cocok untuk ID angka yang valid.
+Route::get('/event/{event}', [FrontEndController::class, 'show'])->name('event.show');
 
-// Jalur untuk memproses data yang dikirim dari form input acara baru
-Route::post('/event/store', [EventController::class, 'store']);
-
-// Jalur untuk menampilkan daftar acara
-Route::get('/events', [EventController::class, 'index']);
-
-//  Jalur untuk menampilkan halaman edit acara (Perhatikan parameter {event} yang akan digunakan untuk mengambil data yang akan diedit)
-Route::get('/event/{event}/edit', [EventController::class, 'edit']);
-
-//  jalur untuk memproses penyimpanan data yang di-edit (Perhatikan method PUT)
-Route::put('/event/{event}', [EventController::class, 'update']);
-
-// Jalur untuk memproses penghapusan data (Perhatikan method DELETE)
-Route::delete('/event/{event}', [EventController::class, 'destroy']);
+// Rute Auth (Login, Register, Logout) - dari Breeze
+require __DIR__.'/auth.php';

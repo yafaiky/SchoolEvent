@@ -46,7 +46,7 @@ class EventController extends Controller
         }
 
         Event::create($data);
-        return redirect('/events')->with('success', 'Acara dan Poster berhasil dipublikasi!');
+        return redirect()->route('events.index')->with('success', 'Acara dan Poster berhasil dipublikasi!');
     }
 
     // FUNGSI 2: EDIT (Menampilkan halaman form edit) 
@@ -81,7 +81,7 @@ class EventController extends Controller
         }
 
         $event->update($data);
-        return redirect('/events')->with('success', 'Data Acara sukses diperbarui!');
+        return redirect()->route('events.index')->with('success', 'Data Acara sukses diperbarui!');
     }
 
     // FUNGSI 4: DELETE (Pemusnahan Data Total) 
@@ -93,6 +93,6 @@ class EventController extends Controller
         }
         // Setelah fisiknya musnah dari server, hapus catatan datanya dari Database 
         $event->delete();
-        return redirect('/events')->with('success', 'Acara dan fisik posternya telah dimusnahkan!');
+        return redirect()->route('events.index')->with('success', 'Acara dan posternya berhasil dihapus!');
     }
 }
